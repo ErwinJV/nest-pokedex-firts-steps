@@ -9,6 +9,7 @@ import { UpdatePokemonDto } from './dto/update-pokemon.dto';
 import { isValidObjectId, Model } from 'mongoose';
 import { Pokemon } from './entities/pokemon.entity';
 import { InjectModel } from '@nestjs/mongoose';
+import { QueryParametersDto } from 'src/common/dto/query-parameters.dto';
 
 @Injectable()
 export class PokemonService {
@@ -27,8 +28,9 @@ export class PokemonService {
     }
   }
 
-  findAll() {
-    return `This action returns all pokemon`;
+  findAll(queryParametersDto: QueryParametersDto) {
+    const { limit = 0, offset = 0 } = queryParametersDto;
+    return this.pokemonModel.find().limit(limit).skip(offset).sort({ no: 1 });
   }
 
   async findOne(term: string) {

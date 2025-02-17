@@ -23,7 +23,17 @@ npm i -g @nest/cli
 docker compose up -d
 ```
 
-5. Regenerate the database with the seed
+5. Clone the file **.env.template**
+
+6. Fill the env vars defined in the `.env`
+
+7. Execute the app in dev environment
+
+```
+yarn start:dev
+```
+
+6. Regenerate the database with the seed
 
 ```
 http://localhost:3000/api/v2/seed

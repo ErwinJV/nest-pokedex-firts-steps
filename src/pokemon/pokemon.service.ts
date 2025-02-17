@@ -10,13 +10,22 @@ import { isValidObjectId, Model } from 'mongoose';
 import { Pokemon } from './entities/pokemon.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { QueryParametersDto } from 'src/common/dto/query-parameters.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PokemonService {
+  private defaultLimit: number;
+  private offset: number;
+
   constructor(
     @InjectModel(Pokemon.name)
     private readonly pokemonModel: Model<Pokemon>,
-  ) {}
+
+    private readonly configService: ConfigService,
+  ) {
+    this.defaultLimit = this.configService.getOrThrow<number>('defaultLimit');
+    this.offset = this.configService.getOrThrow<number>('offset');
+  }
 
   async create(createPokemonDto: CreatePokemonDto) {
     try {
@@ -29,7 +38,8 @@ export class PokemonService {
   }
 
   findAll(queryParametersDto: QueryParametersDto) {
-    const { limit = 0, offset = 0 } = queryParametersDto;
+    const { limit = this.defaultLimit, offset = this.offset } =
+      queryParametersDto;
     return this.pokemonModel.find().limit(limit).skip(offset).sort({ no: 1 });
   }
 
